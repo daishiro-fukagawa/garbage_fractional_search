@@ -9,16 +9,25 @@ soup = BeautifulSoup(response.text, "html.parser")
 
 table = soup.find("table", {"class": "greenTable2"})
 
-header = ["name", "type", "method"]
+header1 = ["name", "type"]
+header2 = ["type", "method"]
 
-rows = []
-for tr in table.find_all("tr")[1:]:
+tbody = table.find("tbody")
+rows1 = []
+rows2 = []
+for tr in tbody.find_all("tr"):
     row = [td.get_text(strip=True) for td in tr.find_all("td")]
-    rows.append(row)
+    rows1.append(row[:2])  # name, type
+    rows2.append(row[1:])  # type, ,method
 
-with open("../public/data/garbage_data.csv", "w", encoding="utf-8", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(header)
-    writer.writerows(rows)
+with open("../public/data/garbage_names.csv", "w", encoding="utf-8", newline="") as f1:
+    writer1 = csv.writer(f1)
+    writer1.writerow(header1)
+    writer1.writerows(rows1)
+
+with open("../public/data/garbage_types.csv", "w", encoding="utf-8", newline="") as f2:
+    writer2 = csv.writer(f2)
+    writer2.writerow(header2)
+    writer2.writerows(rows2)
 
 print("CSVファイルにデータが書き込まれました。")
